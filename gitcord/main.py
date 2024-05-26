@@ -1,6 +1,6 @@
 import discord
 
-from config import OWNER_ID, DISCORD_TOKEN, TEST_GUILDS, DEBUG
+from gitcord.config import OWNER_ID, DISCORD_TOKEN, TEST_GUILDS, DEBUG
 
 intents = discord.Intents.default()
 if DEBUG:
@@ -8,7 +8,7 @@ if DEBUG:
 else:
     client = discord.Bot(intents=intents, owner_id=OWNER_ID)
 
-slash_cogs = ["slash.help"]
+slash_cogs = ["slash.help", "slash.remotes"]
 for cog in slash_cogs:
     client.load_extension(cog)
 
