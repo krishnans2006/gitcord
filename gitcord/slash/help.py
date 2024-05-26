@@ -10,10 +10,14 @@ class Help(commands.Cog):
         self.cogs = [cog for cog in self.client.cogs.keys()]
         self.text = ""
 
-    @slash_command(name="help", description="Show this help message", integration_types={
-        discord.IntegrationType.guild_install,
-        discord.IntegrationType.user_install,
-    })
+    @slash_command(
+        name="help",
+        description="Show this help message",
+        integration_types={
+            discord.IntegrationType.guild_install,
+            discord.IntegrationType.user_install,
+        },
+    )
     async def help(self, context: ApplicationContext) -> None:
         await context.defer(ephemeral=True)
         text = ""

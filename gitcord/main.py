@@ -20,7 +20,9 @@ async def on_ready():
 
 
 @client.event
-async def on_application_command_error(context: discord.ApplicationContext, error: discord.DiscordException):
+async def on_application_command_error(
+    context: discord.ApplicationContext, error: discord.DiscordException
+):
     if isinstance(error, discord.ApplicationCommandInvokeError):
         await context.respond(
             f"This command raised an error! Please report this to the developers.\n```py\n{str(error)}\n```",
