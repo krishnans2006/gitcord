@@ -71,7 +71,7 @@ class Remotes(commands.Cog):
             await context.respond(content="Invalid remote!", ephemeral=True)
             return
 
-        await context.respond(content=f"Here's a link! {link}")
+        await context.respond(content=f"Here's a link! <{link}>")
 
 
 def setup(client) -> None:
