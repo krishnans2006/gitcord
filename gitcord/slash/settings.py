@@ -1,8 +1,8 @@
 import discord
-from discord import ApplicationContext, SlashCommandGroup
+from discord import ApplicationContext, SlashCommandGroup, Option
 from discord.ext import commands
 
-from gitcord.data.database import get_user_defaults
+from gitcord.data import database
 
 
 class Settings(commands.Cog):
@@ -20,7 +20,7 @@ class Settings(commands.Cog):
         },
     )
     async def get_defaults(self, context: ApplicationContext) -> None:
-        defaults = get_user_defaults(context.author.id, str(context.author))
+        defaults = database.get_user_defaults(context.author.id, str(context.author))
         if not defaults:
             await context.respond(
                 content=f"You haven't set your defaults yet! Use {self.set_defaults.mention} to do so"
@@ -39,8 +39,30 @@ class Settings(commands.Cog):
             discord.IntegrationType.user_install,
         },
     )
-    async def set_defaults(self, context: ApplicationContext) -> None:
-        await context.respond(content="Default settings are not yet implemented!", ephemeral=True)
+    async def set_defaults(
+        self,
+        context: ApplicationContext,
+        remote: Option(
+            str,
+            description="Default remote server (GitHub or GitLab)",
+            choices=("gh", "gl"),
+            required=False,
+        ),
+        user: Option(str, description="Default user or organization", required=False),
+        repo: Option(str, description="Default repository", required=False),
+    ) -> None:
+        choices = {}
+        if remote:
+            choices["remote"] = remote
+        if user:
+            choices["user"] = user
+        if repo:
+            choices["repo"] = repo
+        if not choices:
+            await context.respond(content="No defaults provided!", ephemeral=True)
+            return
+        database.set_user_defaults(context.author.id, str(context.author), choices)
+        await context.respond(content="Done!", ephemeral=True)
 
 
 def setup(client) -> None:
