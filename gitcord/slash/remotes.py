@@ -93,10 +93,14 @@ class Remotes(commands.Cog):
         title = soup.find("meta", property="og:title")
         image = soup.find("meta", property="og:image")
 
-        title = title["content"] if title else ""
-        image = image["content"] if image else ""
+        title = title["content"] if title else "No page title..."
+        image = image["content"] if image else None
 
         view = RemotesView(link)
+
+        if not image:
+            await context.respond(content=title, view=view)
+            return
 
         async with aiohttp.ClientSession() as session:
             async with session.get(image) as resp:
