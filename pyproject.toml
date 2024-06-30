@@ -10,6 +10,7 @@ python = "^3.11"
 py-cord = {git = "https://github.com/Pycord-Development/pycord", rev = "feat/ua"}
 requests = "^2.32.3"
 pillow = "^10.3.0"
+firebase-admin = "^6.5.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"

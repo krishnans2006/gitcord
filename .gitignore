@@ -162,3 +162,4 @@ cython_debug/
 
 # Custom
 gitcord/config/secret.py
+gitcord/data/creds.json
