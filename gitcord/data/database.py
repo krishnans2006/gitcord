@@ -12,4 +12,18 @@ fb.initialize_app(cred)
 
 db: google.cloud.firestore_v1.client.Client = fb.firestore.client()
 
-db.collection("Users").document("test").set({"test": "test"})
+
+def get_user_defaults(user_id: int, tag: str):
+    doc = db.collection("Users").document(str(user_id))
+
+    doc.set({"Tag": tag}, merge=True)
+
+    return doc.get().to_dict().get("Defaults")
+
+
+def set_user_defaults(user_id: int, tag: str, defaults: dict):
+    doc = db.collection("Users").document(str(user_id))
+
+    doc.set({"Tag": tag, "Defaults": defaults}, merge=True)
+
+    return True
