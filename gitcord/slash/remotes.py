@@ -13,7 +13,7 @@ import re
 import requests
 
 from gitcord.config import REMOTES_DEFAULTS
-from gitcord.ui.remotes import RemotesView
+from gitcord.ui.views import RemotesView
 
 REFERENCE_REGEX = re.compile(
     r"^"

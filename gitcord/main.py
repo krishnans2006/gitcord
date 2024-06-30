@@ -8,7 +8,7 @@ if DEBUG:
 else:
     client = discord.Bot(intents=intents, owner_id=OWNER_ID)
 
-slash_cogs = ["slash.help", "slash.remotes"]
+slash_cogs = ["slash.help", "slash.remotes", "slash.settings"]
 for cog in slash_cogs:
     client.load_extension(cog)
 
