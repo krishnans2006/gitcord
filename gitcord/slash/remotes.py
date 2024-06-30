@@ -1,4 +1,8 @@
+import io
+
+import aiohttp
 import discord
+from PIL import Image
 from discord import ApplicationContext, SlashCommand, SlashCommandGroup, Option
 from discord.ext import commands
 from discord.commands import slash_command
@@ -76,16 +80,30 @@ class Remotes(commands.Cog):
             return
 
         response = requests.get(link)
-        soup = BeautifulSoup(response.text)
+        soup = BeautifulSoup(response.text, "html.parser")
 
-        title = soup.find("meta", property="og:title")
-        url = soup.find("meta", property="og:url")
+        title = soup.find("meta", property="og:title").get("content")
+        image = soup.find("meta", property="og:image").get("content")
+        url = soup.find("meta", property="og:url").get("content")
 
-        print(title, url)
+        print(title, image, url)
 
         view = RemotesView(link)
 
-        await context.respond(content=f"{title}", view=view)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(image) as resp:
+                img = await resp.read()
+                with io.BytesIO(img) as file:
+                    pil = Image.open(file)
+                    pil.thumbnail((400, 200), Image.Resampling.LANCZOS)
+                    with io.BytesIO() as output_file:
+                        pil.save(output_file, format="PNG")
+                        output_file.seek(0)
+                        discord_file = discord.File(output_file, filename="image.png")
+
+        content = f"{title}" if values["remote"] == "gl" else ""
+
+        await context.respond(content=content, view=view, file=discord_file)
 
 
 def setup(client) -> None:
