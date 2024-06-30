@@ -51,6 +51,8 @@ class Remotes(commands.Cog):
             return
 
         user_defaults = database.get_user_defaults(context.author.id, str(context.author))
+        if not user_defaults:
+            user_defaults = {}
 
         values = match.groupdict()
         for k, v in values.items():
