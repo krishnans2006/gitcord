@@ -62,8 +62,8 @@ class Remotes(commands.Cog):
                 else:
                     values[k] = GLOBAL_DEFAULTS[k]
 
-        remote_key = {"gh": "https://github.com", "gl": "https://gitlab.com"}
-        link = f"{remote_key[values['remote']]}/{values['user']}/{values['repo']}"
+        remote_to_link = {"gh": "https://github.com", "gl": "https://gitlab.com"}
+        link = f"{remote_to_link[values['remote']]}/{values['user']}/{values['repo']}"
 
         if values["remote"] == "gh":
             if values["mr"]:
@@ -96,7 +96,13 @@ class Remotes(commands.Cog):
         title = title["content"] if title else "No page title..."
         image = image["content"] if image else None
 
-        view = RemotesView(link)
+        remote_to_text = {"gh": "GitHub", "gl": "GitLab"}
+        text = f"{remote_to_text[values['remote']]} - {values['user']}/{values['repo']}"
+        if values["ref"]:
+            text += f" - #{values['ref']}"
+        if values["mr"]:
+            text += f" - !{values['mr']}"
+        view = RemotesView(text, link)
 
         if not image:
             await context.respond(content=title, view=view)
