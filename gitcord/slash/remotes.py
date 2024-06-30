@@ -90,11 +90,11 @@ class Remotes(commands.Cog):
         response = requests.get(link)
         soup = BeautifulSoup(response.text, "html.parser")
 
-        title = soup.find("meta", property="og:title").get("content")
-        image = soup.find("meta", property="og:image").get("content")
-        url = soup.find("meta", property="og:url").get("content")
+        title = soup.find("meta", property="og:title")
+        image = soup.find("meta", property="og:image")
 
-        print(title, image, url)
+        title = title["content"] if title else ""
+        image = image["content"] if image else ""
 
         view = RemotesView(link)
 
