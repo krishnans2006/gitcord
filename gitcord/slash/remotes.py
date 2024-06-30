@@ -3,9 +3,13 @@ from discord import ApplicationContext, SlashCommand, SlashCommandGroup, Option
 from discord.ext import commands
 from discord.commands import slash_command
 
+from bs4 import BeautifulSoup
+
 import re
+import requests
 
 from gitcord.config import REMOTES_DEFAULTS
+from gitcord.ui.remotes import RemotesView
 
 REFERENCE_REGEX = re.compile(
     r"^"
@@ -71,7 +75,17 @@ class Remotes(commands.Cog):
             await context.respond(content="Invalid remote!", ephemeral=True)
             return
 
-        await context.respond(content=f"Here's a link! <{link}>")
+        response = requests.get(link)
+        soup = BeautifulSoup(response.text)
+
+        title = soup.find("meta", property="og:title")
+        url = soup.find("meta", property="og:url")
+
+        print(title, url)
+
+        view = RemotesView(link)
+
+        await context.respond(content=f"{title}", view=view)
 
 
 def setup(client) -> None:
