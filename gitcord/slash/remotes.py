@@ -12,7 +12,8 @@ from bs4 import BeautifulSoup
 import re
 import requests
 
-from gitcord.config import REMOTES_DEFAULTS
+from gitcord.config import REMOTES_DEFAULTS as GLOBAL_DEFAULTS
+from gitcord.data import database
 from gitcord.ui.views import RemotesView
 
 REFERENCE_REGEX = re.compile(
@@ -49,10 +50,15 @@ class Remotes(commands.Cog):
             await context.respond(content="Invalid reference string!", ephemeral=True)
             return
 
+        user_defaults = database.get_user_defaults(context.author.id, str(context.author))
+
         values = match.groupdict()
         for k, v in values.items():
             if not v:
-                values[k] = REMOTES_DEFAULTS[k]
+                if k in user_defaults:
+                    values[k] = user_defaults[k]
+                else:
+                    values[k] = GLOBAL_DEFAULTS[k]
 
         remote_key = {"gh": "https://github.com", "gl": "https://gitlab.com"}
         link = f"{remote_key[values['remote']]}/{values['user']}/{values['repo']}"
