@@ -87,6 +87,9 @@ class Remotes(commands.Cog):
             await context.respond(content="Invalid remote!", ephemeral=True)
             return
 
+        # Defer response to give us more time
+        await context.defer()
+
         response = requests.get(link)
         soup = BeautifulSoup(response.text, "html.parser")
 
